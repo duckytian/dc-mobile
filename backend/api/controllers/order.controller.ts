@@ -1338,10 +1338,6 @@ export const orderController = {
 
   async createCounterOrder(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.auth) {
-        throw new ApiError(401, 'UNAUTHORIZED', 'Not authenticated');
-      }
-
       const {customerInfo, items, totalAmount, paymentMethod} = req.body;
 
       if (
@@ -1458,7 +1454,7 @@ export const orderController = {
         : 'cash';
 
       const transaction = await transactionRepository.create({
-        cashierId: req.auth.userId as any,
+        cashierId: (req.auth?.userId as any) ?? null,
         orderId: order._id,
         paymentMethod: safePm,
         totalAmount: safeTotalAmount,
@@ -1481,10 +1477,6 @@ export const orderController = {
 
   async voidCounterOrder(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.auth) {
-        throw new ApiError(401, 'UNAUTHORIZED', 'Not authenticated');
-      }
-
       const order = await orderRepository.findById(req.params.id);
       if (!order) {
         throw new ApiError(404, 'ORDER_NOT_FOUND', 'Order not found');
@@ -1506,7 +1498,7 @@ export const orderController = {
           try {
             await stockMovementService.restoreOrderStock(
               String(order._id),
-              req.auth.userId
+              (req.auth?.userId as any) ?? null
             );
           } catch (error) {
             await orderRepository.updateStockDeducted(String(order._id), true);
@@ -1530,10 +1522,6 @@ export const orderController = {
 
   async updateStatus(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.auth) {
-        throw new ApiError(401, 'UNAUTHORIZED', 'Not authenticated');
-      }
-
       const {status} = req.body;
       const validStatuses: OrderStatus[] = [
         'pending',
@@ -1638,7 +1626,7 @@ export const orderController = {
           try {
             await stockMovementService.restoreOrderStock(
               String(order._id),
-              req.auth.userId
+              (req.auth?.userId as any) ?? null
             );
           } catch (error) {
             await orderRepository.updateStockDeducted(

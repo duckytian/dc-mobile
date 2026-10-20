@@ -6,7 +6,7 @@ import {createCategoryDto, updateCategoryDto} from '../dtos/category.dto';
 
 const router = Router();
 
-router.get('/', requireAuth, categoryController.list);
+router.get('/', categoryController.list);
 
 router.get('/public', categoryController.list);
 

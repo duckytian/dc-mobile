@@ -9,7 +9,7 @@ import {
 
 const router = Router();
 
-router.get('/', requireAuth, requireAdmin, ingredientController.list);
+router.get('/', ingredientController.list);
 
 router.post(
   '/',

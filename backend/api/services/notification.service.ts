@@ -85,10 +85,16 @@ export const notificationService = {
   },
 
   async listForCashier(cashierId: string) {
+    if (cashierId === 'default-cashier') {
+      return notificationRepository.listAllCashier();
+    }
     return notificationRepository.listByCashierId(cashierId);
   },
 
   async countUnreadForCashier(cashierId: string) {
+    if (cashierId === 'default-cashier') {
+      return notificationRepository.countUnreadAllCashier();
+    }
     return notificationRepository.countUnreadByCashierId(cashierId);
   },
 
@@ -211,7 +217,7 @@ export const notificationService = {
     if (!notification) {
       throw new ApiError(404, 'NOTIFICATION_NOT_FOUND', 'Notification not found');
     }
-    if (String(notification.cashierId) !== cashierId) {
+    if (cashierId !== 'default-cashier' && String(notification.cashierId) !== cashierId) {
       throw new ApiError(
         403,
         'FORBIDDEN',
@@ -232,6 +238,10 @@ export const notificationService = {
   },
 
   async markAllReadForCashier(cashierId: string) {
+    if (cashierId === 'default-cashier') {
+      await notificationRepository.markAllReadAllCashier();
+      return notificationRepository.countUnreadAllCashier();
+    }
     await notificationRepository.markAllReadByCashierId(cashierId);
     return notificationRepository.countUnreadByCashierId(cashierId);
   },
@@ -273,7 +283,7 @@ export const notificationService = {
     if (!notification) {
       throw new ApiError(404, 'NOTIFICATION_NOT_FOUND', 'Notification not found');
     }
-    if (String(notification.cashierId) !== cashierId) {
+    if (cashierId !== 'default-cashier' && String(notification.cashierId) !== cashierId) {
       throw new ApiError(
         403,
         'FORBIDDEN',

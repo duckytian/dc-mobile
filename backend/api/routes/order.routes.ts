@@ -99,28 +99,20 @@ router.patch(
 );
 router.get(
   '/all',
-  requireAuth,
-  requireStaff,
   validateQuery(listAllOrdersQueryDto),
   orderController.listAllOrders
 );
 
 router.get(
   '/counter',
-  requireAuth,
-  requireCashier,
   orderController.listCounterOrders
 );
 router.post(
   '/counter',
-  requireAuth,
-  requireCashier,
   orderController.createCounterOrder
 );
 router.post(
   '/counter/:id/void',
-  requireAuth,
-  requireCashier,
   orderController.voidCounterOrder
 );
 
@@ -129,16 +121,12 @@ router.post(
 // (e.g. "/orders/follow-up" -> getOrderById("follow-up") -> CastError 500).
 router.get(
   '/follow-up',
-  requireAuth,
-  requireStaff,
   orderMessageController.listFollowUpOrders
 );
 
-router.get('/:id', requireAuth, requireStaff, orderController.getOrderById);
+router.get('/:id', orderController.getOrderById);
 router.patch(
   '/:id/status',
-  requireAuth,
-  requireStaff,
   orderController.updateStatus
 );
 

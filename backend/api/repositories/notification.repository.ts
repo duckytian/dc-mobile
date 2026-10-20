@@ -21,6 +21,11 @@ export const notificationRepository = {
       .sort({createdAt: -1})
       .exec(),
 
+  listAllCashier: () =>
+    NotificationModel.find({target: 'cashier'})
+      .sort({createdAt: -1})
+      .exec(),
+
   findById: (id: string) => NotificationModel.findById(id).exec(),
 
   findReviewRequestByOrder: (customerId: string, orderId: string) =>
@@ -39,6 +44,9 @@ export const notificationRepository = {
 
   countUnreadByCashierId: (cashierId: string) =>
     NotificationModel.countDocuments({target: 'cashier', cashierId, read: false}).exec(),
+
+  countUnreadAllCashier: () =>
+    NotificationModel.countDocuments({target: 'cashier', read: false}).exec(),
 
   create: (data: Partial<NotificationDocument>) =>
     NotificationModel.create(data),
@@ -97,6 +105,12 @@ export const notificationRepository = {
   markAllReadByCashierId: (cashierId: string) =>
     NotificationModel.updateMany(
       {target: 'cashier', cashierId, read: false},
+      {read: true, readAt: new Date()}
+    ).exec(),
+
+  markAllReadAllCashier: () =>
+    NotificationModel.updateMany(
+      {target: 'cashier', read: false},
       {read: true, readAt: new Date()}
     ).exec(),
 

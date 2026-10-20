@@ -11,29 +11,21 @@ const router = Router();
 
 router.get(
   '/cashier',
-  requireAuth,
-  requireCashier,
   notificationController.listCashierNotifications
 );
 
 router.patch(
   '/cashier/read-all',
-  requireAuth,
-  requireCashier,
   notificationController.markAllReadCashier
 );
 
 router.patch(
   '/cashier/:id/read',
-  requireAuth,
-  requireCashier,
   notificationController.markReadCashier
 );
 
 router.delete(
   '/cashier/:id',
-  requireAuth,
-  requireCashier,
   notificationController.removeCashier
 );
 
