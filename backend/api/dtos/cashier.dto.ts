@@ -1,0 +1,18 @@
+import {z} from 'zod';
+
+export const createCashierDto = z.object({
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  email: z.string().email(),
+  password: z.string().min(8),
+  username: z.string().min(3),
+  phoneNumber: z.string().min(1).optional(),
+  address: z.string().min(1).optional(),
+  profilePhoto: z.string().url().optional()
+});
+
+export type CreateCashierDto = z.infer<typeof createCashierDto>;
+
+export const updateCashierDto = createCashierDto.partial();
+
+export type UpdateCashierDto = z.infer<typeof updateCashierDto>;

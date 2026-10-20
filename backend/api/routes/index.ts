@@ -1,0 +1,42 @@
+import Router from 'express';
+import authRoutes from './auth.routes';
+import cashierRoutes from './cashier.routes';
+import productRoutes from './product.routes';
+import promoRoutes from './promo.routes';
+import uploadRoutes from './upload.routes';
+import cartRoutes from './cart.routes';
+import orderRoutes from './order.routes';
+import stockMovementRoutes from './stockMovement.routes';
+import dashboardRoutes from './dashboard.routes';
+import reportRoutes from './report.routes';
+import settingsRoutes from './settings.routes';
+import reviewRoutes from './review.routes';
+import notificationRoutes from './notification.routes';
+import rewardRoutes from './reward.routes';
+import supportRoutes from './support.routes';
+import storeStatusRoutes from './storeStatus.routes';
+import ingredientRoutes from './ingredient.routes';
+import categoryRoutes from './category.routes';
+
+const router = Router();
+
+router.use('/auth', authRoutes);
+router.use('/cashiers', cashierRoutes);
+router.use('/products', productRoutes);
+router.use('/promos', promoRoutes);
+router.use('/upload', uploadRoutes);
+router.use('/cart', cartRoutes);
+router.use('/orders', orderRoutes);
+router.use('/inventory', stockMovementRoutes);
+router.use('/dashboard', dashboardRoutes);
+router.use('/report', reportRoutes);
+router.use('/settings', settingsRoutes);
+router.use('/reviews', reviewRoutes);
+router.use('/notifications', notificationRoutes);
+router.use('/rewards', rewardRoutes);
+router.use('/support', supportRoutes);
+router.use('/store-status', storeStatusRoutes);
+router.use('/ingredients', ingredientRoutes);
+router.use('/categories', categoryRoutes);
+
+export default router;

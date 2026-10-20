@@ -1,0 +1,115 @@
+import {z} from 'zod';
+import {PASSWORD_RULES} from '../utils/passwordRules';
+
+const passwordSchema = z
+  .string()
+  .min(1, 'Password is required')
+  .superRefine((value, ctx) => {
+    for (const rule of PASSWORD_RULES) {
+      if (!rule.test(value)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Password must include: ${rule.label}`
+        });
+      }
+    }
+  });
+
+/** Email or phone — at least one is required for identifier-based endpoints. */
+const identifierFields = {
+  email: z.string().email().optional(),
+  phoneNumber: z.string().min(1).optional()
+};
+
+const requireIdentifier = (
+  v: {email?: string; phoneNumber?: string},
+  ctx: z.RefinementCtx
+) => {
+  if (!v.email && !v.phoneNumber) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Email or phone number is required'
+    });
+  }
+};
+
+export const registerDto = z.object({
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  email: z.string().email(),
+  password: passwordSchema,
+  phoneNumber: z.string().min(1).optional(),
+  address: z.string().min(1).optional(),
+  username: z.string().min(1).optional()
+});
+
+export const verifyDto = z
+  .object({
+    ...identifierFields,
+    code: z.string().length(6) // always 6 digits from generateVerificationCode()
+  })
+  .superRefine(requireIdentifier);
+
+export const resendVerificationDto = z
+  .object(identifierFields)
+  .superRefine(requireIdentifier);
+
+export const loginDto = z
+  .object({
+    ...identifierFields,
+    password: z.string().min(1)
+  })
+  .superRefine(requireIdentifier);
+
+export const refreshDto = z.object({
+  refreshToken: z.string().min(1).optional()
+});
+
+export const forgotPasswordDto = z
+  .object(identifierFields)
+  .superRefine(requireIdentifier);
+
+export const resetPasswordDto = z
+  .object({
+    ...identifierFields,
+    code: z.string().length(6),
+    newPassword: passwordSchema
+  })
+  .superRefine(requireIdentifier);
+
+export const updateProfileDto = z.object({
+  firstName: z.string().min(1).optional(),
+  lastName: z.string().min(1).optional(),
+  email: z.string().email().optional(),
+  phoneNumber: z.string().min(1).optional(),
+  currentPassword: z.string().min(1).optional(),
+  username: z.string().min(1).optional(),
+  profilePhoto: z.string().min(1).optional(),
+  businessName: z.string().min(1).optional(),
+  businessLogo: z.string().min(1).optional(),
+  storeAddress: z.string().min(1).optional(),
+  businessContactNumber: z.string().min(1).optional(),
+  operatingHours: z.string().min(1).optional(),
+  businessType: z.string().min(1).optional(),
+  address: z.string().min(1).optional(),
+  closingTime: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+  advanceCloseMinutes: z.number().int().min(5).max(60).optional(),
+  defaultPrepMinutes: z.number().int().min(1).max(1440).optional(),
+  isManuallyClosed: z.boolean().optional(),
+  manualCloseReason: z.string().optional()
+});
+
+export const changePasswordDto = z.object({
+  currentPassword: z.string().min(1),
+  newPassword: passwordSchema
+});
+
+export type RegisterDto = z.infer<typeof registerDto>;
+export type VerifyDto = z.infer<typeof verifyDto>;
+export type ResendVerificationDto = z.infer<typeof resendVerificationDto>;
+export type LoginDto = z.infer<typeof loginDto>;
+export type RefreshDto = z.infer<typeof refreshDto>;
+export type ForgotPasswordDto = z.infer<typeof forgotPasswordDto>;
+export type ResetPasswordDto = z.infer<typeof resetPasswordDto>;
+export type UpdateProfileDto = z.infer<typeof updateProfileDto>;
+export type ChangePasswordDto = z.infer<typeof changePasswordDto>;
